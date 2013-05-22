@@ -1,0 +1,9 @@
+*.swp
+*.pyc
+*.log
+dist
+*.egg-info
+*.sqlite
+.coverage
+coverage
+__version__.py

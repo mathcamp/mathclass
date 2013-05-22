@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+<title>
+    Math Class
+</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
+<link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css" rel="stylesheet">
+<link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/redmond/jquery-ui.css" rel="stylesheet">
+<style type='text/css'>
+body {
+    padding-top:60px;
+}
+.text-large {
+  font-size: 16px;
+}
+.text-xlarge {
+  font-size: 18px;
+}
+.text-xxlarge {
+  font-size: 24px;
+}
+.text-xxxlarge {
+  font-size: 36px;
+}
+</style>
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+
+            <a class="brand" href="#">Math Class</a>
+
+            <div class="nav-collapse collapse">
+              <ul id="nav-item-container" class="nav pull-right">
+                <li><a href='#upload' data-toggle='modal'>Upload</a></li>
+              </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div id='container' class='container container-fluid'>
+  <div class='row'>
+    <div class='span1'></div>
+    <div id='announcements' class='span10'></div>
+    <div class='span1'></div>
+  </div>
+  <div id='page-content'>
+  </div>
+</div>
+
+<div id="upload" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modal-upload-label" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3 id="modal-upload-label">Upload Presentation</h3>
+  </div>
+  <div class="modal-body">
+    <form id='upload-form' action='upload' method='POST' class='navbar-form'>
+      <div id='upload-form-title' class='control-group'>
+        <input type="text" name='title' class='input-large' placeholder='title' required />
+        <span class="help-inline"></span>
+      </div>
+      <div id='upload-form-author' class='control-group'>
+        <input type="text" name='author' class='input-large' placeholder='author' required />
+        <span class="help-inline"></span>
+      </div>
+      <div id='upload-form-description' class='control-group'>
+        <textarea name='description' placeholder='description' style='width:95%' rows=3 required></textarea>
+        <span class="help-inline"></span>
+      </div>
+      <div id='upload-form-content' class='control-group'>
+        <textarea name='content' placeholder='content' style='width:95%' rows=5 required></textarea>
+        <span class="help-inline"></span>
+      </div>
+      <div id='upload-form-date' class='control-group'>
+        <input type='text' id='date' class='input-small' name='date' placeholder='date' required />
+        <span class="help-inline"></span>
+      </div>
+      <div>
+        <button id='upload-button' type="button" class="btn btn-primary" data-loading-text='Uploading...' onclick='upload()'>Upload</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src='static/js/index.js'></script>
+<script type='text/javascript'>
+function resetUploadForm() {
+  $('#upload-form input').each(function() {$(this).val('')});
+  $('#upload-form textarea').each(function() {$(this).html('')});
+}
+
+function upload() {
+  $('#upload-button').button('loading');
+  $('#upload-form span.help-inline').each(function() {$(this).html('')});
+  $('#upload-form div.control-group').each(function() {$(this).removeClass('error')});
+  $.post('upload', $('#upload-form').serialize(), function(data) {
+    $('#upload-button').button('reset');
+      if (data.status == 0) {
+        $('#upload').modal('hide');
+        resetUploadForm();
+        renderPage();
+      } else {
+        for (name in data.errors) {
+          $('#upload-form-' + name).addClass('error');
+          $('#upload-form-' + name + ' span.help-inline').html(data.errors[name]);
+        }
+      }
+  }).fail(function() {
+    $('#upload-button').button('reset');
+    announce('Error uploading presentation!', 'error', 5000);
+  });
+}
+
+$(function() {
+  $('#date').datepicker();
+});
+</script>
+</body>
+</html>

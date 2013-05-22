@@ -1,0 +1,19 @@
+<div>
+{% if talk is none %}
+    <div class='alert alert-error'>Talk not found!</div>
+{% else %}
+    <h2>{{ talk.title }}</h2>
+    by <span class='text-xlarge'>{{ talk.author }}</span>
+    <div><em>{{ talk.date.isoformat() }}</em></div>
+    <div class='row' style='margin-top: 20px; margin-bottom: 50px;'>
+        <div class='span12'>
+            {{ talk.description }}
+        </div>
+    </div>
+    <div class='row'>
+        <div class='span12' style='text-align: center'>
+            {{ talk.content|safe }}
+        </div>
+    </div>
+{% endif %}
+</div>

@@ -1,0 +1,13 @@
+{% for talk in talks %}
+<div class='row' style='margin-bottom:20px'>
+  <div class='span6 offset3'>
+    <a href='#talk/{{ talk.id }}'><span class='text-xlarge'>{{ talk.title }}</span> - by {{ talk.author }}</a>
+    <div>
+        <em>{{ talk.date.isoformat() }}</em>
+    </div>
+    <div class='well'>
+        {{ talk.description | truncate(length=150) }}
+    </div>
+  </div>
+</div>
+{% endfor %}
