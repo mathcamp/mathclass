@@ -1,0 +1,4 @@
+mathclass
+=========
+
+Sample pyramid application
