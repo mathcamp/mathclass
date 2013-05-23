@@ -67,12 +67,6 @@ class GoogleAuthPolicy(object):
         current user on subsequent requests. """
         return []
 
-def renderer_globals(system_values):
-    new_vals = {}
-    if 'has_permission' not in system_values:
-        new_vals['has_permission'] = pyramid.security.has_permission
-    return new_vals
-
 def main(global_config, **settings):
     """ This function returns a WSGI application.
 
@@ -105,7 +99,6 @@ def main(global_config, **settings):
     config.add_request_method(db, reify=True)
 
     config.add_jinja2_search_path("mathclass:templates")
-    config.set_renderer_globals_factory(renderer_globals)
 
     cache_age = settings.get('pyramid.cache_max_age')
     if cache_age is not None:
