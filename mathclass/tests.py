@@ -32,7 +32,7 @@ class IntegrationTests(unittest.TestCase):
         self.session.commit()
         self.request.matchdict['id'] = test_talk.id
         response = get_talk(self.request)
-        self.assertEqual(response, {'talk':test_talk})
+        self.assertEqual(response['talk'], test_talk)
 
     def test_upload_talk(self):
         """ After uploading, a talk should be in the database """
