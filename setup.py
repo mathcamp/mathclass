@@ -6,17 +6,6 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 
-requires = [
-    'pyramid',
-    'SQLAlchemy',
-    'transaction',
-    'pyramid_tm',
-    'pyramid_jinja2',
-    'pyramid_debugtoolbar',
-    'zope.sqlalchemy',
-    'colander',
-    ]
-
 DATA = {'name':'mathclass',
       'description':'mathclass',
       'long_description':README,
@@ -34,7 +23,20 @@ DATA = {'name':'mathclass',
         'include_package_data':True,
         'zip_safe':False,
         'test_suite':'mathclass',
-        'install_requires':requires,
+        'install_requires':[
+            'pyramid',
+            'SQLAlchemy',
+            'transaction',
+            'pyramid_tm',
+            'pyramid_jinja2',
+            'pyramid_debugtoolbar',
+            'zope.sqlalchemy',
+            'colander',
+        ],
+        'tests_require':[
+            'coverage',
+            'nose',
+        ],
         'entry_points':"""\
       [paste.app_factory]
       main = mathclass:main

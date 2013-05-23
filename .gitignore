@@ -3,6 +3,7 @@
 *.log
 dist
 *.egg-info
+*.egg
 *.sqlite
 .coverage
 coverage
