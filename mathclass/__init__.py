@@ -36,7 +36,10 @@ def main(global_config, **settings):
     config.add_request_method(db, reify=True)
 
     config.add_jinja2_search_path("mathclass:templates")
-    config.add_static_view('static', 'static', cache_max_age=settings.get('pyramid.cache_max_age'))
+    cache_age = settings.get('pyramid.cache_max_age')
+    if cache_age is not None:
+        cache_age = int(cache_age)
+    config.add_static_view('static', 'static', cache_max_age=cache_age)
     config.add_route('root', '/')
     config.add_route('upload', '/upload')
     config.add_route('talks', '/_fragment/')
