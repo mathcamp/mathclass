@@ -22,7 +22,7 @@ DATA = {'name':'mathclass',
         'packages':find_packages(),
         'include_package_data':True,
         'zip_safe':False,
-        'test_suite':'mathclass',
+        'test_suite':'nose.collector',
         'install_requires':[
             'pyramid',
             'SQLAlchemy',
@@ -35,7 +35,9 @@ DATA = {'name':'mathclass',
         ],
         'tests_require':[
             'coverage',
-            'nose',
+        ],
+        'setup_requires':[
+            'nose>=1.0',
         ],
         'entry_points':"""\
       [paste.app_factory]
