@@ -41,7 +41,14 @@ body {
 
             <div class="nav-collapse collapse">
               <ul id="nav-item-container" class="nav pull-right">
-                <li><a href='#upload' data-toggle='modal'>Upload</a></li>
+                {% if can_upload %}
+                  <li><a href='#upload' data-toggle='modal'>Upload</a></li>
+                {% endif %}
+                {% if logged_in %}
+                  <li><a href='{{ request.route_url("logout") }}'>logout</a></li>
+                {% else %}
+                  <li><a href='#' onclick='return login()'>login</a></li>
+                {% endif %}
               </ul>
             </div>
         </div>
@@ -96,9 +103,10 @@ body {
 <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 <script src='static/js/index.js'></script>
 <script type='text/javascript'>
+var LOGIN = "{{ request.route_url('login') }}";
 function resetUploadForm() {
   $('#upload-form input').each(function() {$(this).val('')});
-  $('#upload-form textarea').each(function() {$(this).html('')});
+  $('#upload-form textarea').each(function() {$(this).val('')});
 }
 
 function upload() {

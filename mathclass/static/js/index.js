@@ -28,6 +28,12 @@ function announce(msg, level, duration) {
   $('#announcements').append(div);
 }
 
+function login() {
+    var newloc = LOGIN + '?next=' + encodeURIComponent(window.location);
+    window.location = newloc;
+    return false;
+}
+
 $(function() {
     $(window).on('hashchange', renderPage);
     renderPage();

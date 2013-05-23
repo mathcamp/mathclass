@@ -2,6 +2,9 @@
 {% if talk is none %}
     <div class='alert alert-error'>Talk not found!</div>
 {% else %}
+  {% if can_delete %}
+    <span class='pull-right'><button type='button' class='btn btn-danger' onclick='return deleteTalk("{{ talk.id }}")'>delete</button></span>
+  {% endif %}
     <h2>{{ talk.title }}</h2>
     by <span class='text-xlarge'>{{ talk.author }}</span>
     <div><em>{{ talk.date.isoformat() }}</em></div>
@@ -15,5 +18,18 @@
             {{ talk.content|safe }}
         </div>
     </div>
+<script type='text/javascript'>
+function deleteTalk(id) {
+  $.ajax('delete/' + id, {
+    type: 'DELETE'
+  }).done(function(data) {
+    window.location.hash = '';
+  })
+  .fail(function() {
+    announce("Failed to delete talk!", 'error', 5000);
+  });
+  return false;
+}
+</script>
 {% endif %}
 </div>
