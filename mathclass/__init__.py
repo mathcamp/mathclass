@@ -1,4 +1,5 @@
-from zope.sqlalchemy import ZopeTransactionExtension
+""" Simple website for serving out our talks """
+from zope.sqlalchemy import ZopeTransactionExtension #pylint: disable=F0401
 import pyramid.security
 from pyramid.traversal import DefaultRootFactory
 from pyramid.config import Configurator
@@ -21,6 +22,7 @@ def db(request):
     return session
 
 class GoogleAuthPolicy(object):
+    """ Simple auth policy using google's openid """
     def __init__(self, settings):
         self._settings = settings
 

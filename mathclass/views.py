@@ -24,7 +24,7 @@ def index(request):
 def do_upload(request):
     """ Handle a form upload """
     try:
-        appstruct = TalkForm().deserialize(request.POST)
+        appstruct = TalkForm().deserialize(request.POST) #pylint: disable=E1101
     except colander.Invalid as e:
         return {'status':1, 'errors':e.asdict()}
     title = appstruct['title']
