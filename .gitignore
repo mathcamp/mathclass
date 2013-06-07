@@ -8,3 +8,4 @@ dist
 .coverage
 coverage
 __version__.py
+.venv

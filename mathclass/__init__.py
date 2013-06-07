@@ -85,6 +85,7 @@ def main(global_config, **settings):
     DefaultRootFactory.__acl__ = [
         (pyramid.security.Allow, 'admin', pyramid.security.ALL_PERMISSIONS),
         (pyramid.security.Allow, pyramid.security.Authenticated, 'logged_in'),
+        (pyramid.security.Allow, pyramid.security.Authenticated, 'upload')
     ]
 
     config.include('velruse.providers.google_hybrid')
