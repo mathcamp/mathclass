@@ -1,0 +1,5 @@
+
+pylint==0.28.0
+pep8
+autopep8
+coverage

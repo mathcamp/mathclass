@@ -9,3 +9,5 @@ dist
 coverage
 __version__.py
 .venv
+
+venv
