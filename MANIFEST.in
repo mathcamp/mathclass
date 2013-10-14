@@ -1,2 +1,4 @@
 include *.txt *.ini *.cfg *.rst
 recursive-include mathclass *.ico *.png *.css *.gif *.jpg *.pt *.txt *.mak *.mako *.js *.html *.xml *.jinja2
+
+include version_helper.py
