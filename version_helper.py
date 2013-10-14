@@ -54,9 +54,9 @@ def _write_constants(filename, **constants):
     """ Write python constants to a file """
     with open(filename, 'w') as outfile:
         outfile.write('"""This file is auto-generated during the '
-                      'package-building process"""\n')
+                      'package-building process"""%s' % os.linesep)
         for key, value in constants.iteritems():
-            outfile.write("%s = '%s'" % (key, value))
+            outfile.write("%s = '%s'%s" % (key, value, os.linesep))
 
 
 def get_version(package,
