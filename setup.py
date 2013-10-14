@@ -8,25 +8,30 @@ from version_helper import get_version
 HERE = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(HERE, 'README.txt')).read()
 
-DATA = {'name': 'mathclass',
-        'version': get_version('mathclass'),
-        'description': 'mathclass',
-        'long_description': README,
-        'classifiers': [
+VERSION, SOURCE_LABEL = get_version('mathclass')
+
+if __name__ == "__main__":
+    setup(
+        name='mathclass',
+        version=VERSION,
+        source_label=SOURCE_LABEL,
+        description='mathclass',
+        long_description=README,
+        classifiers=[
             "Programming Language :: Python",
             "Framework :: Pyramid",
             "Topic :: Internet :: WWW/HTTP",
             "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         ],
-        'author': 'Steven Arcangeli',
-        'author_email': 'steven@highlig.ht',
-        'url': 'http://highlig.ht',
-        'keywords': 'web wsgi bfg pylons pyramid',
-        'packages': find_packages(),
-        'include_package_data': True,
-        'zip_safe': False,
-        'test_suite': 'nose.collector',
-        'install_requires': [
+        author='Steven Arcangeli',
+        author_email='steven@highlig.ht',
+        url='http://highlig.ht',
+        keywords='web wsgi bfg pylons pyramid',
+        packages=find_packages(),
+        include_package_data=True,
+        zip_safe=False,
+        test_suite='nose.collector',
+        install_requires=[
             'pyramid==1.4',
             'SQLAlchemy',
             'transaction',
@@ -39,17 +44,14 @@ DATA = {'name': 'mathclass',
             'colander',
             'velruse',
         ],
-        'tests_require': [
+        tests_require=[
             'coverage',
         ],
-        'setup_requires': [
+        setup_requires=[
             'nose>=1.0',
         ],
-        'entry_points': """\
+        entry_points="""\
       [paste.app_factory]
       main = mathclass:main
-      """,
-        }
-
-if __name__ == "__main__":
-    setup(**DATA)
+      """
+    )

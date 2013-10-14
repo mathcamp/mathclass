@@ -18,8 +18,11 @@ the version number from the file it generated earlier.
 
 """
 import os
+import re
 
 import subprocess
+
+DEV_BUILD = re.compile('.*-[0-9]+-g[0-9a-f]{7}')
 
 
 def _git_describe(describe_cmd):
@@ -31,6 +34,29 @@ def _git_describe(describe_cmd):
         print "Error parsing git revision!"
         print e.output
         raise
+
+
+def _parse_constants(filename):
+    """ Parse python constants from a file """
+    constants = {}
+    with open(filename, 'r') as infile:
+        for line in infile:
+            components = line.split('=')
+            if len(components) <= 1:
+                continue
+            key = components[0].strip()
+            value = components[1].strip(' \'\"')
+            constants[key] = value
+    return constants
+
+
+def _write_constants(filename, **constants):
+    """ Write python constants to a file """
+    with open(filename, 'w') as outfile:
+        outfile.write('"""This file is auto-generated during the '
+                      'package-building process"""\n')
+        for key, value in constants.iteritems():
+            outfile.write("%s = '%s'" % (key, value))
 
 
 def get_version(package,
@@ -54,22 +80,32 @@ def get_version(package,
     version_mod : str, optional
         The name of the file to write the version into (default '__version__.py')
 
+    Returns
+    -------
+    version : str
+        The unique version of this package formatted for `PEP 440
+        <http://www.python.org/dev/peps/pep-0440>`_
+    source_label : str
+        The unique version of this package with the git ref embedded, as per
+        the output of ``git describe``.
+
     """
     here = os.path.abspath(os.path.dirname(__file__))
     version_file_path = os.path.join(here, package, version_mod)
 
     if os.path.isdir(os.path.join(here, '.git')):
-        version = _git_describe(describe_cmd + describe_args)
-        # Make sure we write the version number to the file so it gets
-        # distributed with the package
-        with open(version_file_path, 'w') as version_file:
-            version_file.write('"""This file is auto-generated during the '
-                               'package-building process"""\n')
-            version_file.write("__version__ = '" + version + "'")
-        return version
+        source_label = _git_describe(describe_cmd + describe_args)
+        if DEV_BUILD.match(source_label):
+            components = source_label.split('-')
+            if components[-1] == 'dirty':
+                components = components[:-1]
+            parent_count = components[-2]
+            version = '-'.join(components[:-2]) + '.dev%s' % parent_count
+        else:
+            version = source_label
+        _write_constants(version_file_path, source_label=source_label,
+                         version=version)
+        return version, source_label
     else:
-        # If we already have a version file, use the version there
-        with open(version_file_path, 'r') as version_file:
-            version_line = version_file.readlines()[1]
-            version = version_line.split("'")[1]
-            return version
+        constants = _parse_constants(version_file_path)
+        return constants['version'], constants['source_label']
