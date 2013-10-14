@@ -44,8 +44,8 @@ def _parse_constants(filename):
             components = line.split('=')
             if len(components) <= 1:
                 continue
-            key = components[0].strip()
-            value = components[1].strip(' \'\"')
+            key = components[0].strip(' _')
+            value = components[1].strip().strip('\'\"')
             constants[key] = value
     return constants
 
@@ -56,7 +56,7 @@ def _write_constants(filename, **constants):
         outfile.write('"""This file is auto-generated during the '
                       'package-building process"""%s' % os.linesep)
         for key, value in constants.iteritems():
-            outfile.write("%s = '%s'%s" % (key, value, os.linesep))
+            outfile.write("__%s__ = '%s'%s" % (key, value, os.linesep))
 
 
 def get_version(package,
