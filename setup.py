@@ -2,19 +2,15 @@
 import os
 
 from setuptools import setup, find_packages
-from version_helper import get_version
+from version_helper import git_version
 
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(HERE, 'README.txt')).read()
 
-VERSION, SOURCE_LABEL = get_version('mathclass')
-
 if __name__ == "__main__":
     setup(
         name='mathclass',
-        version=VERSION,
-        source_label=SOURCE_LABEL,
         description='mathclass',
         long_description=README,
         classifiers=[
@@ -53,5 +49,6 @@ if __name__ == "__main__":
         entry_points="""\
       [paste.app_factory]
       main = mathclass:main
-      """
+      """,
+        **git_version()
     )
