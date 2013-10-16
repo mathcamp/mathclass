@@ -7,7 +7,7 @@ dist
 *.sqlite
 .coverage
 coverage
-__version__.py
+_version.py
 .venv
 
 venv
