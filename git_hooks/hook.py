@@ -6,16 +6,26 @@ This pre-commit hook was originally based on a hook by Lorenzo Bolla
 https://github.com/lbolla/dotfiles/blob/master/githooks/pre-commit
 
 """
-import json
-import tempfile
-import os
-import shutil
-import sys
-import subprocess
-import contextlib
 import fnmatch
+import os
+import sys
 
-CONF_FILE = 'gitbox.conf'
+import contextlib
+import json
+import shlex
+import shutil
+import subprocess
+import tempfile
+
+
+CONF_FILE = '.devbox.conf'
+
+
+def convert_command(cmd):
+    """ If a command is a string, convert it to list form for subprocess """
+    if isinstance(cmd, basestring):
+        return shlex.split(cmd)
+    return cmd
 
 
 @contextlib.contextmanager
@@ -29,18 +39,6 @@ def pushd(directory):
         os.chdir(curdir)
 
 
-def get_modified(pattern):
-    """Get a list of new and modified files for this commit"""
-    out = subprocess.check_output(['git', 'diff', '--cached', '--name-only',
-                                   '--diff-filter=ACMRT'])
-    modifieds = []
-    for line in out.splitlines():
-        stripped_line = line.strip()
-        if fnmatch.fnmatch(stripped_line, pattern):
-            modifieds.append(stripped_line)
-    return modifieds
-
-
 def run_checks(conf, tmpdir):
     """ Run selected checks on the current git index """
     modified = subprocess.check_output(['git', 'diff', '--cached',
@@ -52,28 +50,29 @@ def run_checks(conf, tmpdir):
         binpath = os.path.join(os.path.abspath(conf['env']['path']), 'bin')
         path = binpath + ':' + path
     with pushd(tmpdir):
-        for pattern, commands in conf['modified'].iteritems():
+        for pattern, command in conf.get('hooks_modified', []):
+            command = convert_command(command)
             for filename in modified:
                 if not fnmatch.fnmatch(filename, pattern):
                     continue
                 printed_filename = False
-                for command in commands:
-                    proc = subprocess.Popen(command + [filename],
-                                            env={'PATH': path},
-                                            stdout=subprocess.PIPE,
-                                            stderr=subprocess.STDOUT)
-                    output, _ = proc.communicate()
-                    if proc.returncode != 0:
-                        if not printed_filename:
-                            print filename
-                            print '=' * len(filename)
-                            printed_filename = True
-                        print command[0]
-                        print '-' * len(command[0])
-                        print output
-                        retcode |= proc.returncode
+                proc = subprocess.Popen(command + [filename],
+                                        env={'PATH': path},
+                                        stdout=subprocess.PIPE,
+                                        stderr=subprocess.STDOUT)
+                output, _ = proc.communicate()
+                if proc.returncode != 0:
+                    if not printed_filename:
+                        print filename
+                        print '=' * len(filename)
+                        printed_filename = True
+                    print command[0]
+                    print '-' * len(command[0])
+                    print output
+                    retcode |= proc.returncode
 
-        for command in conf['all']:
+        for command in conf.get('hooks_all', []):
+            command = convert_command(command)
             retcode |= subprocess.call(command)
 
     return retcode
